@@ -58,8 +58,9 @@ var findDistance = function(ip1, ip2, callback) {
 
 var cli = function() {
     var argv = require('yargs')
-        .default('rtt', false)
         .alias('d', 'distance')
+        .alias('j', 'json')
+        .alias('i', 'info')
         .argv;
 
     var path = 'json';
@@ -68,8 +69,23 @@ var cli = function() {
     }
 
     if (argv.d) {
-        findDistance(argv._[0], argv.d, function(err, distance) {
+        findDistance(path, argv.d, function(err, distance) {
             console.log(distance);
+        });
+    } else if (argv.j) {
+        getIpInfo(path, function(err, data) {
+            console.log(JSON.stringify(data, null, 4));
+        });
+    } else if (argv.i) {
+        getIpInfo(path, function(err, data) {
+            console.log('IP:', data.ip);
+            console.log('Hostname:', data.hostname);
+            console.log('City:', data.city);
+            console.log('Region:', data.region);
+            console.log('Postal:', data.postal);
+            console.log('Country:', data.country);
+            console.log('Coordinates:', data.loc);
+            console.log('ISP:', data.org);
         });
     } else {
         findLocation(path, function(err, location) {
@@ -78,5 +94,7 @@ var cli = function() {
     }
 };
 
-exports.findLocation = findLocation;
+exports.info = getIpInfo;
+exports.location = findLocation;
+exports.distance = findDistance;
 exports.cli = cli;

@@ -17,30 +17,40 @@ There are two ways to use this package: through the command line or by within yo
 
 ### Command Line
 ```bash
-$ twenty [IP-ADDRESS] [-d=IP-ADDRESS]
+$ twenty [IP-ADDRESS] [-d=IP-ADDRESS] [-ij]
 ```
 
 Twenty takes an optional IP address as an argument. If one isn't given, then your own IP address is used. Optionally, a second IP address can be given with the `-d` argument to find the distance between the two IP address' locations.
 
+The `-i` and `-j` flags will print out all of the IP location info in human readable and JSON format, respectively.
+
 ### In Your Code
-Twenty can also be used programmatically. Currently, the two functions provided are `findLocation()` and `findDistance()`.
+Twenty can also be used programmatically. Currently, the functions provided are `info()`, `location()` and `distance()`.
+
+- `info()`: Provides you with all the IP info as a JavaScript object
+- `location()`: Returns the IP's location as a "[CITY], [REGION]" string
+- `distance()`: Calculates the distance between two IP addresses in kilometers
+
+#### Example Code
 
 ```javascript
 var twenty = require('twenty');
 
-twenty.findLocation('8.8.8.8', function(err, location) {
+twenty.info('8.8.8.8', function(err, data) {
+    console.log('Google\'s DNS server is located at:', data.loc);
+});
+
+twenty.location('8.8.8.8', function(err, location) {
     console.log('Google\'s DNS server is in:', location);
 });
 
-twenty.findDistance('8.8.8.8', '54.173.122.231', function(err, distance) {
+twenty.distance('8.8.8.8', '54.173.122.231', function(err, distance) {
     console.log('Distance between Google\'s DNS and stackabuse.com server (km):', distance);
 });
 ```
 
-The `findLocation()` function returns the location as "[CITY], [REGION]" and `findDistance()` returns the distance in kilometers.
-
 ## Note
-Since Twenty uses the ipinfo.io REST service for getting location information, you'll need to be aware of your usage. The daily limit for free usage is 1,000 requests per day.
+Since Twenty uses the ipinfo.io REST service for getting location information, you'll need to be aware of your usage. The daily limit for free usage is 1,000 requests per day. Check the [ipinfo.io](http://ipinfo.io/about) About page for more information.
 
 ## Why 'Twenty'?
 The name 'Twenty' came from the phrase "What's your 20?", which came from the police [10-code](https://en.wikipedia.org/wiki/Ten-code) "10-20", which means "identify your position" or "where are you?".
