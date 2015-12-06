@@ -1,0 +1,16 @@
+{
+  "name": "twenty",
+  "version": "0.0.1",
+  "description": "Locates the city/region of a given URL/IP address",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Scott Robinson <s.w.robinson@gmail.com> (http://stackabuse.com)",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^3.0.6",
+    "request": "^2.67.0",
+    "yargs": "^3.31.0"
+  }
+}
