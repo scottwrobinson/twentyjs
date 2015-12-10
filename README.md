@@ -1,7 +1,7 @@
 # Twenty
 
 ## What is it?
-Twenty is a small package to help you get a location (city/region or lat/lon coordinates) from an IP address. There are also other utilities, like a function that provides a rough distance between two IP addresses.
+Twenty is a small package to help you get a location (city/region or lat/lon coordinates) from an IP address. There are also other utilities, like a function that provides a rough distance between two IP addresses. All of this can also be done by specifying the FQDN, like "[stackabuse.com](http://stackabuse.com)" or "google.com".
 
 This tool uses the [ipinfo.io](http://ipinfo.io/) REST service for its data.
 
@@ -17,10 +17,10 @@ There are two ways to use this package: through the command line or by within yo
 
 ### Command Line
 ```bash
-$ twenty [IP-ADDRESS] [-d=IP-ADDRESS] [-ij]
+$ twenty [IP | URL] [-d=<IP | URL>] [-ij]
 ```
 
-Twenty takes an optional IP address as an argument. If one isn't given, then your own IP address is used. Optionally, a second IP address can be given with the `-d` argument to find the distance between the two IP address' locations.
+Twenty takes an optional IP (or URL) address as an argument. If one isn't given, then your own IP address is used. Optionally, a second IP (or URL) address can be given with the `-d` argument to find the distance between the two IP address' locations.
 
 The `-i` and `-j` flags will print out all of the IP location info in human readable and JSON format, respectively.
 
@@ -40,7 +40,7 @@ twenty.info('8.8.8.8', function(err, data) {
     console.log('Google\'s DNS server is located at:', data.loc);
 });
 
-twenty.location('8.8.8.8', function(err, location) {
+twenty.location('google-public-dns-a.google.com', function(err, location) {
     console.log('Google\'s DNS server is in:', location);
 });
 
