@@ -1,9 +1,11 @@
 # Twenty
 
 ## What is it?
-Twenty is a small package to help you get a location (city/region or lat/lon coordinates) from an IP address. There are also other utilities, like a function that provides a rough distance between two IP addresses. All of this can also be done by specifying the FQDN, like "[stackabuse.com](http://stackabuse.com)" or "google.com".
+Twenty is a small package to help you get a location (city/region or lat/lon coordinates) from an IP address. There are also other utilities, like a function that provides a rough distance between two IP addresses. All of this can also be done by specifying the FQDN, like "stackabuse.com" or "google.com".
 
-This tool uses the [ipinfo.io](http://ipinfo.io/) REST service for its data.
+For location data, the [ipinfo.io](http://ipinfo.io/) REST service is used.
+
+Twenty was created in conjunction with [this article](http://stackabuse.com/how-to-create-a-node-js-cli-application/).
 
 ## Installation
 Twenty can be installed as a project dependency or global CLI tool:
@@ -23,6 +25,20 @@ $ twenty [IP | URL] [-d=<IP | URL>] [-ij]
 Twenty takes an optional IP (or URL) address as an argument. If one isn't given, then your own IP address is used. Optionally, a second IP (or URL) address can be given with the `-d` argument to find the distance between the two IP address' locations.
 
 The `-i` and `-j` flags will print out all of the IP location info in human readable and JSON format, respectively.
+
+```bash
+$ twenty stackabuse.com -j
+{
+    "ip": "54.173.122.231",
+    "hostname": "ec2-54-173-122-231.compute-1.amazonaws.com",
+    "city": "Ashburn",
+    "region": "Virginia",
+    "country": "US",
+    "loc": "39.0437,-77.4875",
+    "org": "AS14618 Amazon.com, Inc.",
+    "postal": "20147"
+}
+```
 
 ### In Your Code
 Twenty can also be used programmatically. Currently, the functions provided are `info()`, `location()` and `distance()`.
