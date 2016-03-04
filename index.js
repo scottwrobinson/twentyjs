@@ -1,7 +1,11 @@
 var dns = require('dns');
 var request = require('request');
 
-var ipRegex = /(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/;
+var ipRegexStr = '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.' +
+                 '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.' +
+                 '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.' +
+                 '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)';
+var ipRegex = new RegExp(ipRegexStr);
 
 var toRad = function(num) {
     return num * (Math.PI / 180);
@@ -10,7 +14,12 @@ var toRad = function(num) {
 var getIpInfo = function(server, callback) {
     var ipinfo = function(p, cb) {
         request('http://ipinfo.io/' + p, function(err, response, body) {
-            var json = JSON.parse(body);
+            var json;
+            try {
+                json = JSON.parse(body);
+            } catch(error) {
+                return cb(error, null);
+            }
             cb(err, json);
         });
     };
@@ -41,23 +50,17 @@ var ipDistance = function(lat1, lon1, lat2, lon2) {
     return r * c;
 };
 
-var findLocation = function(server, callback) {
-    getIpInfo(server, function(err, data) {
-        callback(null, data.city + ', ' + data.region);
-    });
-};
-
 var findDistance = function(ip1, ip2, callback) {
     var lat1, lon1, lat2, lon2;
 
     getIpInfo(ip1, function(err, data1) {
         var coords1 = data1.loc.split(',');
         lat1 = Number(coords1[0]);
-        lon1 =  Number(coords1[1]);
+        lon1 = Number(coords1[1]);
         getIpInfo(ip2, function(err, data2) {
             var coords2 = data2.loc.split(',');
-            lat2 =  Number(coords2[0]);
-            lon2 =  Number(coords2[1]);
+            lat2 = Number(coords2[0]);
+            lon2 = Number(coords2[1]);
 
             var dist = ipDistance(lat1, lon1, lat2, lon2);
             callback(null, dist);
@@ -66,39 +69,50 @@ var findDistance = function(ip1, ip2, callback) {
 };
 
 var cli = function() {
-    var argv = require('yargs')
-        .alias('d', 'distance')
-        .alias('j', 'json')
-        .alias('i', 'info')
-        .argv;
+    var yargs = require('yargs')
+        .usage('Usage: $0 [command] [options]')
+        .command('distance <loc1> [loc2]', 'Compute the approx. distance between IPs/URLs')
+        .option('json', {
+            alias: 'j',
+            describe: 'Return data as json',
+        })
+        .example('$0', 'Get location info for your IP address')
+        .example('$0 -j', 'Get location info for your IP as json')
+        .example('$0 distance 8.8.8.8', 'Get distance from your IP to given IP')
+        .example('$0 distance stackabuse.com google.com', 'Get the distance between two given URLs')
+        .help('help')
+        .alias('h', 'help')
+        .epilog('Copyright 2016 Scott Robinson');
 
-    if (argv.d) {
-        findDistance(argv._[0], argv.d, function(err, distance) {
-            console.log(distance);
+    var argv = yargs.argv;
+
+    if (argv.loc1) {
+        findDistance(argv.loc1, argv.loc2, function(err, distance) {
+            console.log(String(distance.toFixed(2)) + ' km');
         });
-    } else if (argv.j) {
+    } else if (argv.json) {
         getIpInfo(argv._[0], function(err, data) {
             console.log(JSON.stringify(data, null, 4));
         });
-    } else if (argv.i) {
-        getIpInfo(argv._[0], function(err, data) {
-            console.log('IP:', data.ip);
-            console.log('Hostname:', data.hostname);
-            console.log('City:', data.city);
-            console.log('Region:', data.region);
-            console.log('Postal:', data.postal);
-            console.log('Country:', data.country);
-            console.log('Coordinates:', data.loc);
-            console.log('ISP:', data.org);
-        });
     } else {
-        findLocation(argv._[0], function(err, location) {
-            console.log(location);
+        getIpInfo(argv._[0], function(err, data) {
+            if (err) {
+                console.log('Error:', err.message);
+                return;
+            }
+
+            console.log('IP:', data.ip);
+            console.log('Hostname:', data.hostname || '-');
+            console.log('City:', data.city || '-');
+            console.log('Region:', data.region || '-');
+            console.log('Postal:', data.postal || '-');
+            console.log('Country:', data.country || '-');
+            console.log('Coordinates:', data.loc || '-');
+            console.log('ISP:', data.org || '-');
         });
     }
 };
 
 exports.info = getIpInfo;
-exports.location = findLocation;
 exports.distance = findDistance;
 exports.cli = cli;

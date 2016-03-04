@@ -1,7 +1,7 @@
 # Twenty
 
 ## What is it?
-Twenty is a small package to help you get a location (city/region or lat/lon coordinates) from an IP address. There are also other utilities, like a function that provides a rough distance between two IP addresses. All of this can also be done by specifying the FQDN, like "stackabuse.com" or "google.com".
+Twenty is a small package to help you get location (city/region and lat/lon coordinates) and ISP data from an IP address or URL. Other utilities are provided, like a method that provides the approximate distance between two IP addresses. All of this can also be done by specifying the FQDN, like "stackabuse.com" or "google.com".
 
 For location data, the [ipinfo.io](http://ipinfo.io/) REST service is used.
 
@@ -19,12 +19,12 @@ There are two ways to use this package: through the command line or by within yo
 
 ### Command Line
 ```bash
-$ twenty [IP | URL] [-d=<IP | URL>] [-ij]
+$ twenty [command] [ip | url] [-j]
 ```
 
-Twenty takes an optional IP (or URL) address as an argument. If one isn't given, then your own IP address is used. Optionally, a second IP (or URL) address can be given with the `-d` argument to find the distance between the two IP address' locations.
+Twenty takes an optional IP (or URL) address as an argument. If one isn't given, then your own IP address is used. If you're using the `distance` command, then you must provide at least one IP/URL, and optionally two.
 
-The `-i` and `-j` flags will print out all of the IP location info in human readable and JSON format, respectively.
+The `-j` flag will print out all of the IP location info JSON format.
 
 ```bash
 $ twenty stackabuse.com -j
@@ -41,11 +41,10 @@ $ twenty stackabuse.com -j
 ```
 
 ### In Your Code
-Twenty can also be used programmatically. Currently, the functions provided are `info()`, `location()` and `distance()`.
+Twenty can also be used programmatically. Currently, the functions provided are `info()` and `distance()`.
 
 - `info()`: Provides you with all the IP info as a JavaScript object
-- `location()`: Returns the IP's location as a "[CITY], [REGION]" string
-- `distance()`: Calculates the distance between two IP addresses in kilometers
+- `distance()`: Calculates the distance between two IPs/URLs in kilometers
 
 #### Example Code
 
@@ -54,10 +53,6 @@ var twenty = require('twenty');
 
 twenty.info('8.8.8.8', function(err, data) {
     console.log('Google\'s DNS server is located at:', data.loc);
-});
-
-twenty.location('google-public-dns-a.google.com', function(err, location) {
-    console.log('Google\'s DNS server is in:', location);
 });
 
 twenty.distance('8.8.8.8', '54.173.122.231', function(err, distance) {
@@ -72,7 +67,7 @@ Since Twenty uses the ipinfo.io REST service for getting location information, y
 The name 'Twenty' came from the phrase "What's your 20?", which came from the police [10-code](https://en.wikipedia.org/wiki/Ten-code) "10-20", which means "identify your position" or "where are you?".
 
 ## Copyright & License
-Copyright (c) 2015 Scott Robinson
+Copyright (c) 2016 Scott Robinson
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

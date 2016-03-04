@@ -1,6 +1,6 @@
 {
   "name": "twenty",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Locates the city/region of a given IP address",
   "main": "index.js",
   "repository": {
@@ -20,7 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "request": "^2.67.0",
-    "yargs": "^3.31.0"
+    "yargs": "^4.2.0"
   },
   "bin": {
     "twenty": "./bin/twenty"
